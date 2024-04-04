@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <title>Логин - Аутентификация (Bootstrap)</title>
+    <style>
+        td {
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            padding: 10px 5px;
+            border-style: solid;
+            border-width: 1px;
+            overflow: hidden;
+            word-break: normal;
+            border-color: #ccc;
+            color: #333;
+            background-color: ivory;
+        }
+
+        .buttonAdd {
+            padding: 5px;
+            color: blue;
+            background: yellow;
+        }
+
+        .buttonAdd:hover {
+            color: red;
+            background: deepskyblue;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+<form method="POST" th:action="@{/process_login}">
+    <div class="text-center p-5">
+        <p class="h2 fw-bold" style="text-align: center">Пожалуйста, войдите</p>
+        <div th:if="${param.error}" style="color:red">
+            Неправильное имя или пароль
+        </div>
+        <div class="form-floating w-25 mx-auto">
+            <input type="text" class="form-control" id="username" placeholder="Login" name="username">
+        </div>
+        <div class="form-floating mb-2 w-25 mx-auto">
+            <input type="password" class="form-control" id="password" placeholder="Password" name="password">
+        </div>
+        <button type="submit" class="btn btn-primary btn-lg w-25">Войти</button>
+    </div>
+</form>
+<div class="text-center p-5">
+    <button class="btn btn-primary btn-lg w-25" onclick="window.location.href = '/baseRolesInitiation';">Инициализация
+        базовых ролей и
+        пользователей. admin/admin, user/user
+    </button>
+</div>
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+</body>
+</html>

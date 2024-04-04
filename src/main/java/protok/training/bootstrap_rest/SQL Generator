@@ -1,0 +1,29 @@
+// вспомогательный код для ручной генерации таблицы
+create table roles
+(
+    id   bigint auto_increment
+        primary key,
+    name varchar(15) null
+);
+
+create table users
+(
+    id         bigint auto_increment
+        primary key,
+    department varchar(15)  null,
+    password   varchar(100) not null,
+    salary     int          null,
+    username   varchar(15)  null
+);
+
+create table users_roles
+(
+    user_id bigint not null,
+    role_id bigint not null,
+    primary key (role_id, user_id),
+    constraint FK2o0jvgh89lemvvo17cbqvdxaa
+        foreign key (user_id) references users (id),
+    constraint FKj6m8fwv7oqv74fcehir1a9ffy
+        foreign key (role_id) references roles (id)
+);
+

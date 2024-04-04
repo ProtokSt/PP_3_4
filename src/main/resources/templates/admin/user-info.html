@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" lang="en"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <!--    OBSOLETE - Данная страница устарела, но всё ещё может использоваться вместе с контроллерами предыдущей версии-->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <title>User Info</title>
+    <style>
+        .buttonEdit {
+            color: black;
+            background: cornflowerblue;
+        }
+
+        .buttonEdit:hover {
+            color: red;
+            background: cornflowerblue;
+            font-weight: bold;
+        }
+
+        .buttonDelete {
+            color: black;
+            background: plum;
+        }
+
+        .buttonDelete:hover {
+            color: red;
+            background: plum;
+            font-weight: bold;
+        }
+
+        .buttonAdd {
+            color: blue;
+            background: yellow;
+        }
+
+        .buttonAdd:hover {
+            color: red;
+            background: yellow;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-dark bg-dark">
+    <div class="container-fluid">
+        <p class="navbar-brand text-white">
+            <b><span class="align-middle" th:text="${currentUser.username}"></span></b>
+            <span class="align-middle">with roles:</span>
+            <span class="align-middle" th:text="${currentUser.roles}"></span>
+        </p>
+        <form th:action="@{/logout}" method="post">
+            <button type="submit" class="btn btn-dark text-secondary">Разлогиниться</button>
+        </form>
+    </div>
+</nav>
+
+<section>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-2 p-0">
+                <div class="nav flex-column nav-pills pt-4" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                    <a class="nav-link active" href="/admin/showAllUsers" sec:authorize="hasAuthority('ADMIN')"
+                       role="tab"
+                       aria-controls="v-pills-home" aria-selected="true">Admin</a>
+                    <a class="nav-link" href="/user" sec:authorize="(hasAnyAuthority('ADMIN', 'USER'))"
+                       role="tab"
+                       aria-controls="v-pills-profile" aria-selected="false">User</a>
+                </div>
+            </div>
+            <div class="col-10 px-0">
+                <div class="container-fluid">
+                    <h1 class="m-3 fw-bold">Панель Администрирования</h1>
+                    <div class="tab-content" id="tabContent">
+                        <!-- Nav tabs -->
+                        <ul class="nav nav-tabs" id="myTab" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link" href="/admin/showAllUsers" sec:authorize="hasAuthority('ADMIN')"
+                                   role="tab" aria-controls="home" aria-selected="false"
+                                   id="home-tab" data-toggle="tab">Таблица Пользователей</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link active" href="/admin/addNewUser"
+                                   sec:authorize="hasAuthority('ADMIN')"
+                                   role="tab" aria-controls="new-user" aria-selected="true"
+                                   id="new-user-tab">Новый Пользователь</a>
+                            </li>
+                        </ul>
+
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="m-1">
+                                    <h4>Add new user</h4>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md bg-white border">
+                            <form align="center" class="offset-md-4 col-md-3 mt-4 mb-4"
+                                  th:align="center"
+                                  th:method="POST" th:action="@{/admin/saveUser}" th:object="${user}">
+
+                                <label for="username0"><b>Username</b></label>
+                                <input th:name="username" th:type="text"
+                                       class="form-control" id="username0" required/>
+                                <br>
+                                <label for="department0"><b>Department</b></label>
+                                <input th:name="department" th:type="text"
+                                       class="form-control" id="department0" required/>
+                                <br>
+                                <label for="salary0"><b>Salary</b></label>
+                                <input th:name="salary" th:type="number"
+                                       class="form-control" id="salary0" required/>
+                                <br>
+                                <label for="password0"><b>Password</b></label>
+                                <input th:name="password" th:field="*{password}" type="password"
+                                       class="form-control" id="password0" required/>
+                                <br>
+                                <label for="roles0"><b>Role</b></label>
+                                <select multiple class="form-control form-control-sm"
+                                        id="roles0" name="roles" size="3" required>
+                                    <option th:each="role: ${allRoles}"
+                                            th:value="${role.name}">
+                                        <th:block th:text="${role.name}">
+                                        </th:block>
+                                    </option>
+                                </select>
+                                <br><br>
+
+                                <button type="submit" class="btn btn-success btn-lg" value="Add new user">Add new user
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+</body>
+</html>
