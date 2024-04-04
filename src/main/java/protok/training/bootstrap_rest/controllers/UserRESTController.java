@@ -12,12 +12,17 @@ import protok.training.bootstrap_rest.services.UserService;
 
 import java.security.Principal;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 @RestController
 @RequestMapping("/userREST")
 @PreAuthorize("hasAuthority('ROLE_USER')")
 public class UserRESTController {
     private final UserService userService;
     private final RoleService roleService;
+
+    private static final Logger logger = LogManager.getLogger("UserRESTController");
 
     @Autowired
     public UserRESTController(UserService userService, RoleService roleService) {
@@ -28,7 +33,7 @@ public class UserRESTController {
     @GetMapping("/user")
     public ResponseEntity<User> showPrincipalData(Principal principal) {
 
-        System.out.println("userREST/user GET");
+        logger.info("userREST/user GET");
         User user = userService.findByUsername(principal.getName());
         return ResponseEntity.ok(user);
     }

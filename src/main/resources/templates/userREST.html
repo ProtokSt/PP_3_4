@@ -42,9 +42,14 @@
 
         <div class="p-0 col-2">
             <div class="nav flex-column nav-pills pt-4" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-                <a class="nav-link active" href="/userREST" sec:authorize="(hasAnyAuthority('ROLE_ADMIN', 'ROLE_USER'))"
-                   role="tab"
-                   aria-controls="v-pills-profile" aria-selected="true">User</a>
+<!--                <a id="adminPage" href="/adminREST" sec:authorize="hasAuthority('ADMIN')"-->
+<!--                   class="nav-link" role="tab"-->
+<!--                   aria-controls="v-pills-profile">Admin</a>-->
+
+<!--                <a id="userPage" href="/userREST" sec:authorize="(hasAnyAuthority('ADMIN', 'USER'))"-->
+<!--                   class="nav-link active"-->
+<!--                   role="tab"-->
+<!--                   aria-controls="v-pills-profile" aria-selected="true">User</a>-->
             </div>
         </div>
 
@@ -67,7 +72,7 @@
                                     <th scope="col">Roles</th>
                                 </tr>
                                 </thead>
-                                <!--                                фронт код приходит из js по id-->
+                                <!-- фронт код приходит из js по id-->
                                 <tbody id="userData">
                                 </tbody>
                             </table>

@@ -30,7 +30,7 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public Role getRole(String name) {
-        // безуспешная попытка обыграть jackson databind
+        // защита от передачи id роли строкой
         if (name == "1") {
             return roleDao.getRoleById(Long.parseLong(name, 10));
         } else if (name == "2") {

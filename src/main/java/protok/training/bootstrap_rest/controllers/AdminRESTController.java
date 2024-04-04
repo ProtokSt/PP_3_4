@@ -18,6 +18,9 @@ import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 @RestController
 @RequestMapping("/adminREST")
 @PreAuthorize("hasAuthority('ROLE_ADMIN')")
@@ -25,6 +28,8 @@ public class AdminRESTController {
 
     private UserService userService;
     private RoleService roleService;
+
+    private static final Logger logger = LogManager.getLogger("AdminRESTController");
 
     @Autowired
     public AdminRESTController(UserService userService, RoleService roleService) {
@@ -35,14 +40,14 @@ public class AdminRESTController {
     // получение всех
     @GetMapping("/users")
     public ResponseEntity<List<User>> showAllUsers() {
-        System.out.println("adminREST/users GET");
+        logger.info("adminREST/users GET");
         return new ResponseEntity<>(userService.getAllUsers(), HttpStatus.OK);
     }
 
     // получение одного
     @GetMapping("users/{id}")
     public ResponseEntity<User> getOneUser(@PathVariable("id") long id) {
-        System.out.println("adminREST/users/{id} GET");
+        logger.info("adminREST/users/{id} GET");
         User retUser = userService.getUserById(id);
         if (retUser == null) {
             throw new DBSomeException("Записи в БД с таким id: " + id + " нет");
@@ -53,11 +58,11 @@ public class AdminRESTController {
     // изменение
     @PutMapping("/users")
     public ResponseEntity<UserIncorrectData> updateUser(@Valid @RequestBody User user, BindingResult bindingResult) {
-        System.out.println("adminREST/users PUT");
+        logger.info("adminREST/users PUT");
         // сперва проверим логин на совпадение, потом id
         // и если это дубль чужого логина, то даём пред
         User checkU = userService.findByUsername(user.getUsername());
-        System.out.println("userService.findByUsername(" + user.getUsername() + ") = " + checkU);
+        logger.info("userService.findByUsername(" + user.getUsername() + ") = " + checkU);
         if (checkU != null) {
             if (checkU.getId() != user.getId()) {
                 bindingResult.addError(new FieldError("username", "username",
@@ -81,7 +86,7 @@ public class AdminRESTController {
     // удаление
     @DeleteMapping("/users/{id}")
     public ResponseEntity<UserIncorrectData> deleteUser(@PathVariable("id") long id) {
-        System.out.println("adminREST/users/{id} DELETE");
+        logger.info("adminREST/users/{id} DELETE");
         try {
             userService.removeUser(id);
             return new ResponseEntity<>(new UserIncorrectData("User deleted"), HttpStatus.OK);
@@ -93,10 +98,10 @@ public class AdminRESTController {
     // добавление
     @PostMapping("/users")
     public ResponseEntity<UserIncorrectData> createUser(@Valid @RequestBody User user, BindingResult bindingResult) {
-        System.out.println("adminREST/users POST");
+        logger.info("adminREST/users POST");
 
         User checkU = userService.findByUsername(user.getUsername());
-        System.out.println("userService.findByUsername(" + user.getUsername() + ") = " + checkU);
+        logger.info("userService.findByUsername(" + user.getUsername() + ") = " + checkU);
         if (checkU != null) {
             if (checkU.getId() != user.getId()) {
                 bindingResult.addError(new FieldError("username", "username",
@@ -124,18 +129,5 @@ public class AdminRESTController {
                 .collect(Collectors.joining("; "));
     }
 
-    @ExceptionHandler
-    public ResponseEntity<UserIncorrectData> handleException( DBSomeException exception) {
-        UserIncorrectData uID = new UserIncorrectData();
-        uID.setInfo(exception.getMessage());
-        return new ResponseEntity<>(uID, HttpStatus.NOT_FOUND);
-    }
-
-    @ExceptionHandler
-    public ResponseEntity<UserIncorrectData> handleException( Exception exception) {
-        UserIncorrectData uID = new UserIncorrectData();
-        uID.setInfo(exception.getMessage());
-        return new ResponseEntity<>(uID, HttpStatus.BAD_REQUEST);
-    }
 
 }

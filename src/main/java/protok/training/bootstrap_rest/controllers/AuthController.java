@@ -1,6 +1,7 @@
 package protok.training.bootstrap_rest.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -8,12 +9,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import protok.training.bootstrap_rest.services.UserService;
 import protok.training.bootstrap_rest.util.BaseRolesInit;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 @Controller
 public class AuthController {
     private final UserService userService;
 
     private final BaseRolesInit baseRolesInit;
+
+    private static final Logger logger = LogManager.getLogger("AuthController");
 
     @Autowired
     public AuthController(UserService userService, BaseRolesInit baseRolesInit) {
@@ -23,18 +28,17 @@ public class AuthController {
 
     @GetMapping("/login")
     public String loginPage() {
-        System.out.println("login GET");
+        logger.info("login GET");
 
         // тест кодировщика. онлайн кодировщики дают неверные результаты
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
         String password = "user";
         String encodedPassword = passwordEncoder.encode(password);
-        System.out.println();
-        System.out.println("Password is         : " + password);
-        System.out.println("Encoded Password is : " + encodedPassword);
-        System.out.println();
+        logger.info("Password is         : " + password);
+        logger.info("Encoded Password is : " + encodedPassword);
         boolean isPasswordMatch = passwordEncoder.matches(password, encodedPassword);
-        System.out.println("Password : " + password + "   isPasswordMatch    : " + isPasswordMatch);
+        logger.info("Password : " + password + "   isPasswordMatch    : " + isPasswordMatch);
+        logger.info("");
 
         return "/login";
     }
@@ -44,20 +48,22 @@ public class AuthController {
     @RequestMapping("/baseRolesInitiation")
     public String generateUsers() {
 
-        System.out.println("Пропись базовых ролей и пользователей: " + baseRolesInit.doInit());
+        logger.info("Пропись базовых ролей и пользователей: " + baseRolesInit.doInit());
         return "/login";
     }
 
     // связка httpServletResponse.sendRedirect из SuccessUserHandler
+    @PreAuthorize("hasAuthority('ROLE_USER')")
     @GetMapping("/userREST")
     public String upUserREST() {
-        System.out.println("userREST GET");
+        logger.info("userREST GET");
         return "userREST";
     }
 
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @GetMapping("/adminREST")
     public String upAdminREST() {
-        System.out.println("adminREST GET");
+        logger.info("adminREST GET");
         return "adminREST";
     }
 
